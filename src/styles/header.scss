@@ -1,0 +1,20 @@
+.App-header {
+    background-color: $primary-900;
+    min-height: 10vh;
+    display: flex;
+    flex-direction: row;
+    font-size: calc(10px + 1vmin);
+    color: white;
+
+    a {
+        color: $secondary-200;
+        padding: 10px;
+
+        &:hover {
+            color: $secondary-100;
+        }
+        &:visited {
+            color: $secondary-200;
+        }
+    }
+}

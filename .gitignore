@@ -105,3 +105,6 @@ dist
 
 # other
 *.code-workspace
+
+# bootstrap
+src/styles/bootstrap*
