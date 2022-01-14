@@ -6,15 +6,16 @@
     font-size: calc(10px + 1vmin);
     color: white;
 
-    a {
-        color: $secondary-200;
-        padding: 10px;
+    
+}
+.nav-link {
+    color: $secondary-200;
+    padding: 10px;
 
-        &:hover {
-            color: $secondary-100;
-        }
-        &:visited {
-            color: $secondary-200;
-        }
+    &:hover,&:focus {
+        color: $secondary-100;
+    }
+    &:visited {
+        color: $secondary-200;
     }
 }

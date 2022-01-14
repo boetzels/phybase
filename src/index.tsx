@@ -1,16 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+
+// graphql
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql
+} from "@apollo/client";
+
 import './styles/bootstrap/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const graphqlClient = new ApolloClient({
+  uri: 'http://phybase.local:4000',
+  cache: new InMemoryCache()
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <ApolloProvider client={graphqlClient}>
       <App />
-    </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,26 +1,59 @@
 import React , { useState } from 'react';
 
-import FormInput from '../../components/form_input/form_input.comp';
-import CustomButton from '../../components/custom_button/custom_button.comp';
+// graphql
+import { useMutation, gql } from "@apollo/client";
 
-function SignIn() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+import { FormInput, useFormInput } from '../../components/form_input/form_input.comp';
+import CustomButton from '../../components/custom_button/custom_button.comp';
+import { setUserSession } from '../../utils/session.utils';
+//import { isPropertySignature } from 'typescript';
+
+const SIGNIN_QUERY = gql`
+    mutation SignIn($email: string!, $password: string) {
+        signIn(email: $email, password: $password) {
+            jwt
+        }
+    }
+`;
+
+function SignIn(props) {
+    const email = useFormInput('');
+    const password = useFormInput('');
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setError(null);
+        setLoading(true);
+        const [signIn, { data, loading, error }] = useMutation(SIGNIN_QUERY);
 
-        setEmail('');
-        setPassword('');
+        if (error) setError(`Submission error! ${error.message}`);
+        /* axios.post(`http://localhost:4000`,{
+            email: email.value,
+            password: password.value,
+        }).then(response => {
+            setLoading(false);
+            console.log('response', response.data.token, response.data.user);
+            setUserSession(response.data.token, response.data.user);
+            props.history.push('/dash');
+        }).catch(error => {
+            setLoading(false);
+            setError('Something wrong, try again later');
+        }); */
+        console.log('handleSubmit()');
+        /*setEmail('');
+        setPassword('');*/
     };
 
     const handleChange = (event) => {
         const { value, name } = event.target;
-
-        switch (name) {
+        props.history.push('/dashboard');
+        /*switch (name) {
             case 'email': setEmail(value); break;
             case 'password': setPassword(value); break;
-        }
+        }*/
     };
 
     return (
@@ -33,13 +66,13 @@ function SignIn() {
                     </div>
                     <div className='modal-body py-0'>
                         
-                        <FormInput name='email' type='email' value={ email } required handleChange={ handleChange } label='email' />
+                        <FormInput name='email' type='email' value={ '' } {...email} required label='email' />
 
-                        <FormInput name='password' type='password' value={ password } required handleChange={ handleChange } label='password' />
+                        <FormInput name='password' type='password' value={ '' } {...password} required label='password' />
 
                     </div>
                     <div className='modal-footer flex-column border-top-0'>
-                        <CustomButton type='submit'>Sign In</CustomButton>
+                        <CustomButton type='submit' disabled={loading}>{loading ? 'Loading...': 'Sign In'}</CustomButton>
                     </div>
                 </form>
             </div>
