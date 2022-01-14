@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const FormInput = ({ handleChange, label, ...otherProps}) => {
     return (<div className='group'>
@@ -13,4 +13,17 @@ const FormInput = ({ handleChange, label, ...otherProps}) => {
     </div>);
 };
 
-export default FormInput;
+const useFormInput = (initValue) => {
+    const [value, setValue] = useState(initValue);
+
+    const handleChange = (e) => {
+        setValue(e.target.value);
+    };
+
+    return {
+        value,
+        onChange: handleChange
+    };
+};
+
+export { FormInput, useFormInput };
