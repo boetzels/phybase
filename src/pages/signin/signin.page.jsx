@@ -1,59 +1,50 @@
 import React , { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // graphql
 import { useMutation, gql } from "@apollo/client";
 
 import { FormInput, useFormInput } from '../../components/form_input/form_input.comp';
 import CustomButton from '../../components/custom_button/custom_button.comp';
-import { setUserSession } from '../../utils/session.utils';
+import { setToken } from '../../utils/session.utils';
 //import { isPropertySignature } from 'typescript';
 
-const SIGNIN_QUERY = gql`
-    mutation SignIn($email: string!, $password: string) {
-        signIn(email: $email, password: $password) {
+const SIGNIN_MUTATION = gql`
+    mutation SignInMutation(
+            $email: String!
+            $password: String!
+        ) {
+        signin(email: $email, password: $password) {
             jwt
         }
     }
 `;
 
 function SignIn(props) {
+    // setting states and form inputs
     const email = useFormInput('');
     const password = useFormInput('');
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
+    const [signIn, { data, loading, error }] = useMutation(SIGNIN_MUTATION, {
+        onCompleted : (data) => {
+            setToken(data.jwt);
+            navigate('/dash');
+        }
+    });
+
+    // handles form submit
     const handleSubmit = (event) => {
         event.preventDefault();
-        setError(null);
-        setLoading(true);
-        const [signIn, { data, loading, error }] = useMutation(SIGNIN_QUERY);
 
-        if (error) setError(`Submission error! ${error.message}`);
-        /* axios.post(`http://localhost:4000`,{
+        signIn({variables: {
             email: email.value,
             password: password.value,
-        }).then(response => {
-            setLoading(false);
-            console.log('response', response.data.token, response.data.user);
-            setUserSession(response.data.token, response.data.user);
-            props.history.push('/dash');
-        }).catch(error => {
-            setLoading(false);
-            setError('Something wrong, try again later');
-        }); */
-        console.log('handleSubmit()');
-        /*setEmail('');
-        setPassword('');*/
-    };
+        },});
 
-    const handleChange = (event) => {
-        const { value, name } = event.target;
-        props.history.push('/dashboard');
-        /*switch (name) {
-            case 'email': setEmail(value); break;
-            case 'password': setPassword(value); break;
-        }*/
+        if (loading) return 'Submitting...';
+        if (error) return `Submission error! ${error.message}`;
     };
 
     return (

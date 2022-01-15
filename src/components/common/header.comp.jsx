@@ -1,10 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { removeSession } from '../../utils/session.utils';
 
-const Header = (props) => {
+
+const Header = () => {
+    const navigate = useNavigate();
     const handleSignOut = (e) => {
         e.preventDefault();
-        props.history.push('/signin');
+        removeSession();
+        navigate("/signin");
     };
 
     return (

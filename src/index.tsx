@@ -6,17 +6,35 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  useQuery,
-  gql
+  createHttpLink,
 } from "@apollo/client";
+
+import { setContext } from '@apollo/client/link/context';
+
+import { getToken } from './utils/session.utils'
 
 import './styles/bootstrap/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const graphqlClient = new ApolloClient({
+// prepare apollo client
+const graphqlHttpLink = createHttpLink({
   uri: 'http://phybase.local:4000',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = getToken();
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  };
+});
+
+const graphqlClient = new ApolloClient({
+  link: authLink.concat(graphqlHttpLink),
   cache: new InMemoryCache()
 });
 

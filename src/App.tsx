@@ -6,11 +6,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.scss';
 
 // pages and components
-import SignIn from './pages/sign_in/sign_in.page';
+import SignIn from './pages/signin/signin.page';
 import DefaultPage from './pages/default/default.page';
 import Dashboard from './pages/dashboard/dashboard.page';
 import ErrorPage from './pages/error.page';
 import Header from './components/common/header.comp';
+
+import { PrivateRoute } from './utils/privateroute.utils';
 
 
 function App() {
@@ -22,7 +24,7 @@ function App() {
           <Route path="/">
             <Route index element={<DefaultPage />} />
             <Route path="signin" element={<SignIn />} />
-            <Route path="dash" element={<Dashboard />} />
+            <Route path="dash" element={<PrivateRoute component={Dashboard} />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>
